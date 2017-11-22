@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="vn.com.jvit.musicdemoapp.MainActivity">
+
+
+    <EditText
+        android:text="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        android:id="@+id/main_activity_edt_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="URL : "
+        android:textColor="#263238"/>
+
+    <Button
+        android:id="@+id/main_activity_btn_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/main_activity_edt_url"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
+        android:text="DownLoad"
+        android:textColor="#03A9F4"/>
+    <Button
+        android:id="@+id/main_activity_btn_none"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/main_activity_edt_url"
+        android:layout_centerHorizontal="true"
+
+        android:text="None"
+        android:textColor="#03A9F4"/>
+
+    <ListView
+        android:id="@+id/main_activity_lv_song"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/main_activity_btn_download"
+        android:layout_centerHorizontal="true" />
+    <Button
+        android:id="@+id/main_activity_btn_play_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_activity_edt_url"
+        android:layout_alignParentLeft="true"
+        android:text="Play Service"
+        android:textColor="#03A9F4"
+
+        />
+</RelativeLayout>
