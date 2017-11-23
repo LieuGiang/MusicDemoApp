@@ -17,7 +17,7 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity implements PlayMusicFromLocal.DownloadListener {
     private EditText mEdt_url;
-    private Button mBtn_download,mBtn_play_service;
+    private Button mBtn_download, mBtn_play_service;
     private ListView mLv_list_songs;
     private List<File> newList;
     private ArrayList<Song> listSong;
@@ -82,12 +82,14 @@ public class MainActivity extends BaseActivity implements PlayMusicFromLocal.Dow
 
                     adapter.notifyDataSetChanged();
 
-                }else{if (mediaPlayer != null) {
+                } else {
+                    if (mediaPlayer != null) {
 //                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    song.setFlag(false);
-                    adapter.notifyDataSetChanged();
-                }}
+                        mediaPlayer.release();
+                        song.setFlag(false);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
             }
 
         });
@@ -107,7 +109,13 @@ public class MainActivity extends BaseActivity implements PlayMusicFromLocal.Dow
                 new LoadMP3FromURL(MainActivity.this).execute(url);
             }
         });
+        mBtn_play_service.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopService(new Intent(MainActivity.this, BackGroundSoundService.class));
 
+            }
+        });
 
 
     }
