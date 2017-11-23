@@ -1,6 +1,5 @@
 package vn.com.jvit.musicdemoapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -13,16 +12,19 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import vn.com.jvit.utils.AppLog;
-
 /**
  * Created by User on 11/21/2017.
  */
 
 class LoadMP3FromURL extends AsyncTask<String, String, String> {
-    ProgressDialog mProgressDialog;
+
 
     private Context mContext;
+    private DownloadurlListener mDownloaurlListener;
+
+    public void setDownUrlListener(DownloadurlListener listener) {
+        mDownloaurlListener = listener;
+    }
 
     public LoadMP3FromURL(Context context){
         mContext = context;
@@ -31,8 +33,9 @@ class LoadMP3FromURL extends AsyncTask<String, String, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mProgressDialog = new ProgressDialog(mContext);
-        mProgressDialog.show();
+        mDownloaurlListener.onStartDownLoadFile();
+
+
     }
 
     @Override
@@ -65,18 +68,15 @@ class LoadMP3FromURL extends AsyncTask<String, String, String> {
         } catch (Exception e) {
             //AppLog.d("AAA",e.toString());
         }
+        mDownloaurlListener.onDownLoadFileComplete();
         return null;
     }
 
     protected void onProgressUpdate(String... progress) {
         Log.d("ANDRO_ASYNC", progress[0]);
-        mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+        mDownloaurlListener.onFailedDownload();
     }
 
-    @Override
-    protected void onPostExecute(String unused) {
-        mProgressDialog.cancel();
-    }
 
     private String subString(String url) {
         int n = url.lastIndexOf("/");
@@ -88,5 +88,13 @@ class LoadMP3FromURL extends AsyncTask<String, String, String> {
         String name = url.substring(n+1,url.length());
 
         return name;
+    }
+
+    public interface DownloadurlListener {
+        void onStartDownLoadFile();
+
+        void onDownLoadFileComplete();
+
+        void onFailedDownload();
     }
 }

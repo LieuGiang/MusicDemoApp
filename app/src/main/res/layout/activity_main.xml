@@ -27,14 +27,15 @@
         android:layout_alignParentRight="true"
         android:text="DownLoad"
         android:textColor="#03A9F4"/>
+
     <Button
-        android:id="@+id/main_activity_btn_none"
+        android:id="@+id/main_activity_btn_countdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/main_activity_edt_url"
         android:layout_centerHorizontal="true"
-
-        android:text="None"
+        android:text="10"
+        android:onClick="CountDownClick"
         android:textColor="#03A9F4"/>
 
     <ListView

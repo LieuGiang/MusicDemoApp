@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,14 +16,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements PlayMusicFromLocal.DownloadListener {
+import vn.com.jvit.utils.AppLog;
+
+public class MainActivity extends BaseActivity implements PlayMusicFromLocal.DownloadListener, NetworkChangeReceiver.NetworkChangeListener, LoadMP3FromURL.DownloadurlListener {
     private EditText mEdt_url;
-    private Button mBtn_download, mBtn_play_service;
+    private Button mBtn_download, mBtn_play_service, mBtn_count_down;
     private ListView mLv_list_songs;
     private List<File> newList;
     private ArrayList<Song> listSong;
     private MediaPlayer mediaPlayer;
     private RowItemListSongAdapter adapter;
+    public static NetworkChangeReceiver.NetworkChangeListener sListener;
+    private String url;
+    private LoadMP3FromURL loadMP3FromURL;
 
 
     @Override
@@ -36,13 +42,16 @@ public class MainActivity extends BaseActivity implements PlayMusicFromLocal.Dow
         download.setListener(this);
         download.execute();
 
-//        setPlayService();
+//        setPlayServiceCountDown();
 
 
     }
 
 
-    private void setPlayService() {
+    private void setPlayServiceCountDown() {
+
+
+
     }
 
     private void setOnItemclick() {
@@ -72,6 +81,7 @@ public class MainActivity extends BaseActivity implements PlayMusicFromLocal.Dow
 
                     try {
                         mediaPlayer.setDataSource(s);
+                        AppLog.d("AAA", s);
                         mediaPlayer.prepare();
                         mediaPlayer.start();
                         song.setFlag(true);
@@ -96,17 +106,26 @@ public class MainActivity extends BaseActivity implements PlayMusicFromLocal.Dow
     }
 
     private void init() {
+
+
+        mBtn_count_down = findViewById(R.id.main_activity_btn_countdown);
         mEdt_url = findViewById(R.id.main_activity_edt_url);
         mBtn_download = findViewById(R.id.main_activity_btn_download);
         mLv_list_songs = findViewById(R.id.main_activity_lv_song);
         mBtn_play_service = findViewById(R.id.main_activity_btn_play_service);
 
+        url = mEdt_url.getText().toString();
+        sListener = this;
+
+
         mBtn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String url = mEdt_url.getText().toString();
-                new LoadMP3FromURL(MainActivity.this).execute(url);
+
+                loadMP3FromURL = new LoadMP3FromURL(MainActivity.this);
+                loadMP3FromURL.setDownUrlListener(MainActivity.this);
+                loadMP3FromURL.execute(url);
             }
         });
         mBtn_play_service.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +162,49 @@ public class MainActivity extends BaseActivity implements PlayMusicFromLocal.Dow
     @Override
     public void onFailed() {
         hideLoadingDialog();
+    }
+
+    @Override
+    public void onRetryDownload() {
+        loadMP3FromURL = new LoadMP3FromURL(MainActivity.this);
+        loadMP3FromURL.setDownUrlListener(MainActivity.this);
+        loadMP3FromURL.execute(url);
+        //AppLog.d("AAA","ABC");
+    }
+
+    @Override
+    public void onStartDownLoadFile() {
+        showLoadingDialog();
+
+    }
+
+    @Override
+    public void onDownLoadFileComplete() {
+        hideLoadingDialog();
+
+    }
+
+    @Override
+    public void onFailedDownload() {
+        hideLoadingDialog();
+
+    }
+
+    public void CountDownClick(View view) {
+        new CountDownTimer(10000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                mBtn_count_down.setText(String.valueOf(millisUntilFinished / 1000));
+            }
+
+            public void onFinish() {
+
+                Intent intent = new Intent(MainActivity.this, BackGroundSoundService.class);
+                intent.putExtra("songPath", "/storage/emulated/0/SoundHelix-Song-1.mp3");
+                intent.putExtra("songName", "Song Music");
+                startService(intent);
+            }
+        }.start();
     }
 }
 
